@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天气</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            justify-content: space-between;
+            background-color: #f4f4f4
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin: 20px auto;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 20px;
+            margin-top: 0px
+        }
+
+        .search-box {
+            flex: 1;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none
+        }
+
+        .search-button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #647a65;
+            color: white;
+            cursor: pointer;
+            outline: none;
+            margin-left: 10px
+        }
+
+        @media (max-width:600px) {
+            .search-container {
+                flex-direction: column
+            }
+
+            .search-button {
+                margin-left: 0;
+                margin-top: 10px
+            }
+        }
+
+        .columns-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .column {
+            width: 33%;
+            border-right: 1px black solid;
+            text-align: center
+        }
+
+        @media (max-width:600px) {
+            .columns-container {
+                flex-direction: column
+            }
+
+            .column {
+                flex: 0 0 100%;
+                margin-bottom: 20px
+            }
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.search-button').click(function () {
+                var cityName = $('.search-box').val(); 
+                if (cityName) {
+                    $.ajax({
+                        url: 'https://127.0.0.1:8081/weather/'+ cityName,
+                        method: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                            // 假设API返回的数据格式如下：{ "status": "ok", "city": "北京", "temperature": "25°C", "weather": "晴" }  
+                            var weatherInfo = '城市：' + data.city + ', 温度：' + data.temperature + ', 天气：' + data.weather;
+                            $('#weather-info').text(weatherInfo); // 更新天气信息  
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.error('Error fetching weather data: ' + textStatus);
+                            $('#weather-info').text('无法获取天气信息');
+                        }
+                    });
+                }
+            });
+        });  
+    </script>
+</head>
+
+<body>
+
+    <div class="search-container">
+        <input type="text" class="search-box" placeholder="请输入城市名称...">
+        <button class="search-button">搜索</button>
+    </div>
+
+    <div class="search-below-container">
+        <h1>郑州市</h1>
+        <h2>27~32℃</h2>
+        <h3>晴转多云</h3>
+        <p>东风微风</p>
+        <p>实时温度: 32℃,空气质量指数65,良</p>
+    </div>
+
+    <div class="columns-container">
+        <div class="column">
+            <p>周三</p>
+            <p>27~30℃</p>
+            <p>阴转小雨</p>
+            <p>南风微风</p>
+            <p>温度: 32℃,空气质量指数65,良</p>
+        </div>
+        <div class="column">
+            <p>周三</p>
+            <p>27~30℃</p>
+            <p>阴转小雨</p>
+            <p>南风微风</p>
+            <p>温度: 32℃,空气质量指数65,良</p>
+        </div>
+        <div class="column">
+            <p>周三</p>
+            <p>27~30℃</p>
+            <p>阴转小雨</p>
+            <p>南风微风</p>
+            <p>温度: 32℃,空气质量指数65,良</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
