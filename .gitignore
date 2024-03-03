@@ -1,1 +1,8 @@
 venv/
+poetry.lock
+**/*.pyc
+*.pyc
+logs/
+**/__pycache__
+*.pem
+logs/*.log

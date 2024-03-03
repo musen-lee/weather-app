@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import logging
 from flask import Flask
+from flask_cors import CORS
 from config import config
 from logging.handlers import RotatingFileHandler
 from weather import bp_weather
@@ -9,6 +10,7 @@ from weather import bp_weather
 
 def create_app(config_name: str) -> Flask:
     app = Flask(__name__)
+    CORS(app)
     set_logger_cfg(config_name)
     app.config.from_object(config[config_name])
     app.register_blueprint(bp_weather)

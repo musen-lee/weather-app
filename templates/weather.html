@@ -85,25 +85,59 @@
     <script>
         $(document).ready(function () {
             $('.search-button').click(function () {
-                var cityName = $('.search-box').val(); 
+                var cityName = $('.search-box').val();
+                searchWeather(cityName);
+            });
+            $('.search-box').keypress(function (event) {
+                if (event.which == 13) {
+                    var cityName = $(this).val();
+                    searchWeather(cityName);
+                    event.preventDefault();
+                }
+            });
+            function searchWeather(cityName) {
                 if (cityName) {
                     $.ajax({
-                        url: 'https://127.0.0.1:8081/weather/'+ cityName,
+                        url: 'https://127.0.0.1:8081/weather/' + cityName,
                         method: 'GET',
                         dataType: 'json',
                         success: function (data) {
-                            // 假设API返回的数据格式如下：{ "status": "ok", "city": "北京", "temperature": "25°C", "weather": "晴" }  
-                            var weatherInfo = '城市：' + data.city + ', 温度：' + data.temperature + ', 天气：' + data.weather;
-                            $('#weather-info').text(weatherInfo); // 更新天气信息  
+                            if (data.code == 200) {
+                                weatherData = data.data;
+                                todayWeather = weatherData[0]
+                                $('.search-below-container h1').text(cityName);
+                                $('.search-below-container h2').text('日出：' + todayWeather.sunrise + ',' + '日落：' + todayWeather.sunset);
+                                $('.search-below-container h3').text(todayWeather.temperature.min + '~' + todayWeather.temperature.max + '℃');
+                                $('.search-below-container h4').text(todayWeather.skyCon);
+                                $('.search-below-container p:first').text(todayWeather.wind.name + ' ' + todayWeather.wind.direction + '风力等级：' + todayWeather.wind.level);
+                                $('.search-below-container p:last').text('空气质量指数' + todayWeather.airQuality.aqi + ',' + todayWeather.airQuality.level);
+
+                                $('.columns-container').empty();
+                                $.each(weatherData, function (index, weatherInfo) {
+                                    if (index > 0) {
+                                        var columnHtml = `  
+                                        <div class="column"> 
+                                            <p>${weatherInfo.date}</p>
+                                            <p>日出：${weatherInfo.sunrise},日落：${weatherInfo.sunset}</p>
+                                            <p>${weatherInfo.temperature.min} ~ ${weatherInfo.temperature.max}℃</p>
+                                            <p>${weatherInfo.skyCon}</p>
+                                            <p>${weatherInfo.wind.name}${weatherInfo.wind.direction},风力等级：${weatherInfo.wind.level}</p>
+                                            <p>空气质量指数${weatherInfo.airQuality.aqi},${weatherInfo.airQuality.level}</p>  
+                                        </div>
+                                    `;
+                                        $('.columns-container').append(columnHtml);
+                                    }
+                                });
+                            }
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
                             console.error('Error fetching weather data: ' + textStatus);
-                            $('#weather-info').text('无法获取天气信息');
+                            alter('无法获取天气信息');
                         }
                     });
                 }
-            });
-        });  
+            }
+        });
     </script>
 </head>
 
@@ -115,35 +149,15 @@
     </div>
 
     <div class="search-below-container">
-        <h1>郑州市</h1>
-        <h2>27~32℃</h2>
-        <h3>晴转多云</h3>
-        <p>东风微风</p>
-        <p>实时温度: 32℃,空气质量指数65,良</p>
+        <h1></h1>
+        <h2></h2>
+        <h3></h3>
+        <h4></h4>
+        <p></p>
+        <p></p>
     </div>
 
     <div class="columns-container">
-        <div class="column">
-            <p>周三</p>
-            <p>27~30℃</p>
-            <p>阴转小雨</p>
-            <p>南风微风</p>
-            <p>温度: 32℃,空气质量指数65,良</p>
-        </div>
-        <div class="column">
-            <p>周三</p>
-            <p>27~30℃</p>
-            <p>阴转小雨</p>
-            <p>南风微风</p>
-            <p>温度: 32℃,空气质量指数65,良</p>
-        </div>
-        <div class="column">
-            <p>周三</p>
-            <p>27~30℃</p>
-            <p>阴转小雨</p>
-            <p>南风微风</p>
-            <p>温度: 32℃,空气质量指数65,良</p>
-        </div>
     </div>
 
 </body>
