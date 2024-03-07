@@ -6,3 +6,6 @@ class GeoQueryError(Exception):
 
 class WeatherQueryError(Exception):
     pass
+
+class LocationQueryError(Exception):
+    pass

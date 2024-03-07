@@ -2,22 +2,30 @@
 # -*- coding: utf-8 -*-
 import logging
 from flask import Blueprint, render_template, current_app
-
-from .models import ok,fail
-
+from .models import ok, fail
 from .helper import convert2weather
-from .weather import WeatherService
-from .exceptions import GeoQueryError, WeatherQueryError
-from .geo import GeoService
+from thirdapis.weather import WeatherService
+from errors import GeoQueryError, WeatherQueryError
+from thirdapis.geo import GeoService
 
 bp_weather = Blueprint("weather", __name__, template_folder="../templates")
+
+
+@bp_weather.errorhandler(500)
+def internal_system_error():
+    return render_template("500.html"), 500
+
+
+@bp_weather.errorhandler(404)
+def page_not_found(error):
+    return render_template("404.html"), 404
 
 
 @bp_weather.route("/weather/<city_name>")
 def get_weather_by_city(city_name: str):
     geo_service = GeoService(current_app.config)
     try:
-        coordinate = geo_service.get_location(city_name=city_name)
+        coordinate = geo_service.get_coordinate(city_name=city_name)
         if coordinate:
             weather_service = WeatherService(current_app.config)
             weather_data = weather_service.find_weather(coordinate=coordinate)

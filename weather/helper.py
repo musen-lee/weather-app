@@ -4,21 +4,18 @@
 from datetime import datetime
 import logging
 from typing import Dict, List, Tuple
-
-from .models import (
-    WeatherDisplayData,
+from thirdapis.weather import (
     Daily,
     DailyForecast,
     SkyCon,
     WindDirection,
-    AirQualityIndexValue,
     Wind,
     Astro,
     AirQuality,
     Temperature,
-    Humidity,
+    Humidity
 )
-
+from .models import WeatherDisplayData
 
 def extrat_sunrise_and_sunset(data: List[Astro]) -> Tuple[str, str, str]:
     for entry in data:
